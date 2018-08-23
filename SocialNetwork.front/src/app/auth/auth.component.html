@@ -1,0 +1,148 @@
+<div class="landing-page">
+    <div class="content-bg-wrap"></div>
+    <div class="header--standard header--standard-landing" id="header--standard">
+        <div class="container">
+            <div class="header--standard-wrap">
+
+                <a href="#" class="logo">
+                    <div class="img-wrap">
+                        <img src="assets/img/logo.png" alt="Olympus">
+                        <img src="assets/img/logo-colored-small.png" alt="Olympus" class="logo-colored">
+                    </div>
+                    <div class="title-block">
+                        <h6 class="logo-title">olympus</h6>
+                        <div class="sub-title">SOCIAL NETWORK</div>
+                    </div>
+                </a>
+                <a href="#" class="open-responsive-menu js-open-responsive-menu">
+                    <svg class="olymp-menu-icon"><use xlink:href="assets/svg-icons/sprites/icons.svg#olymp-menu-icon"></use></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-spacer--standard"></div>
+
+    <div class="container">
+        <div class="row display-flex">
+            <div class="col col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                <div class="landing-content">
+                    <h1>Bienvenido a esta red que crece contigo!</h1>
+                    <p>Siempre vamos a dar lo mejor para su comodidad. Esta es una red social en constante crecimiento. Usted puede unirse y ser parte de nosotros!
+                    </p>
+                    <a href="#" class="btn btn-md btn-border c-white">Únete con nosotros!</a>
+                </div>
+            </div>
+
+            <div class="col col-xl-5 col-lg-6 col-md-12 col-sm-12 col-12">
+                <div class="registration-login-form">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#login" role="tab">
+                                <svg class="olymp-login-icon"><use xlink:href="assets/svg-icons/sprites/icons.svg#olymp-login-icon"></use></svg>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#register" role="tab">
+                                <svg class="olymp-register-icon"><use xlink:href="assets/svg-icons/sprites/icons.svg#olymp-register-icon"></use></svg>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="login" role="tabpanel" data-mh="log-tab">
+                            <div class="title h6">INICIAR SESIÓN</div>
+                            <form ngNativeValidate #form="ngForm" class="content" (ngSubmit)="Session(form)">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label style="color:red" *ngIf="invalidSession"> * Su email o contraseña son inválidos</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                        <div class="form-group label-floating is-empty">
+                                            <label class="control-label">Email</label>
+                                            <input [(ngModel)]="session.email" name="email" class="form-control" type="email">
+                                        </div>
+                                        <div class="form-group label-floating is-empty">
+                                            <label class="control-label">Contraseña</label>
+                                            <input [(ngModel)]="session.password" name="password" class="form-control" type="password">
+                                        </div>
+                                        <div class="remember">
+                                            <div class="checkbox">
+                                                <label>
+                                                  <input [(ngModel)]="session.remember" name="optionsCheckboxes" type="checkbox"> Recordarme
+                                                </label>
+                                            </div>
+                                            <a href="#" class="forgot">Olvidé mi contraseña</a>
+                                        </div>
+                                        <button type="submit" class="btn btn-lg btn-primary full-width">INGRESAR</button>
+                                        <div class="or"></div>
+                                        <a href="#" class="btn btn-lg bg-google full-width btn-icon-left"><i class="fab fa-google" aria-hidden="true"></i>Ingresar con Google</a>
+                                        <p>No tienes una cuenta? <a href="#">Regístrate ahora!</a> Lo puedes hacer en tan pocos pasos.</p>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="tab-pane" id="register" role="tabpanel" data-mh="log-tab">
+                            <div class="title h6">ÚNASE A NOSOTROS</div>
+                            <form ngNativeValidate #form="ngForm" class="content" (ngSubmit)="RegisterAccount(form)">
+                                <div class="row">
+                                    <div class="col col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group label-floating is-empty">
+                                            <label class="control-label">Nombre</label>
+                                            <input [(ngModel)]="register.name" name="name" class="form-control" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="col col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group label-floating is-empty">
+                                            <label class="control-label">Apellidos</label>
+                                            <input [(ngModel)]="register.lastname" name="lastname" class="form-control" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                        <div class="form-group label-floating is-empty">
+                                            <label class="control-label">Email</label>
+                                            <input [(ngModel)]="register.email" name="email" class="form-control" type="email">
+                                        </div>
+                                        <div class="form-group label-floating is-empty">
+                                            <label class="control-label">Contraseña</label>
+                                            <input [(ngModel)]="register.password" name="password" class="form-control" type="password">
+                                        </div>
+
+                                        <div class="form-group date-time-picker label-floating">
+                                            <label class="control-label">Fecha de Nacimiento</label>
+                                            <input [(ngModel)]="register.birthday" name="datetimepicker" />
+                                            <span class="input-group-addon">
+                                              <svg class="olymp-calendar-icon"><use xlink:href="assets/svg-icons/sprites/icons.svg#olymp-calendar-icon"></use></svg>
+                                            </span>
+                                        </div>
+                                        <div class="form-group label-floating is-select">
+                                            <label class="control-label">Género</label>
+                                            <select [(ngModel)]="register.gender" name="gender" class="selectpicker form-control">
+                                              <option value="">Seleccione un género</option>
+                                              <option value="Male">Masculino</option>
+                                              <option value="Female">Femenino</option>
+                                              <option value="Other">Otro</option>
+                                            </select>
+                                        </div>
+                                        <div class="remember">
+                                            <div class="checkbox">
+                                                <label>
+                                                  <input [(ngModel)]="register.agree" name="optionsCheckboxes" type="checkbox">Acepto los <a href="#">términos y condiciones</a> del sitio web
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-lg full-width">¡UNIRSE YA!</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

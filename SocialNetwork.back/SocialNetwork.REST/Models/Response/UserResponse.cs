@@ -9,24 +9,19 @@ namespace SocialNetwork.Rest.Models.Response
 {
     public class UserResponse
     {
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public String id { get; set; }
         public String name { get; set; }
         public String lastname { get; set; }
         public String photo { get; set; }
         public String url { get; set; }
 
-        public UserResponse(String name, String lastname, String photo, String url)
+        public UserResponse(String id, String name, String lastname, String photo, String url)
         {
             this.name = name;
             this.lastname = lastname;
-            if (String.IsNullOrEmpty(photo))
-            {
-                this.photo = "www.default-image.com";
-            }
-            else
-            {
-                this.photo = photo;
-            }
-            this.url = url;
+            this.photo = photo;
+            this.url = $"{url}/{id}";
         }
     }
 

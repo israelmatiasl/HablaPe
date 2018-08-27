@@ -46,24 +46,24 @@ namespace SocialNetwork.Rest.Controllers
                     {
                         if(BCrypt.Net.BCrypt.Verify(model.password, user.password))
                         {
-                            response = Ok(new SessionResponse(user.name, user.lastname,
-                                                              user.nick, user.birthday.ToShortDateString(), user.gender, 
-                                                              user.photo, jwt.JwtBuilder(user)));
+                            var session = new PreSessionResponse(user.name, user.lastname, user.nick, user.birthday.ToShortDateString(),
+                                                                 user.gender, user.photo, jwt.JwtBuilder(user));
+                            response = Ok(new SessionResponse(session));
                         }
                         else
                         {
-                            response = Ok(new SessionResponse(false, ConstantsResponse.bad_credentials));
+                            response = Ok(new BodyResponse(false, ConstantsResponse.bad_credentials));
                         }
                     }
                     else
                     {
-                        response = Ok(new SessionResponse(false, ConstantsResponse.bad_credentials));
+                        response = Ok(new BodyResponse(false, ConstantsResponse.bad_credentials));
                     }
                 }
             }
-            catch(Exception e)
+            catch
             {
-                response = StatusCode(500, e.Message);
+                response = StatusCode(500, ConstantsResponse.ERROR_HTTP_500);
             }
 
             return response;
@@ -146,7 +146,7 @@ namespace SocialNetwork.Rest.Controllers
                         .Set(x => x.description, "There!");
                     var result = await context.Users.UpdateOneAsync(userUpdate, fieldsUpdate, new UpdateOptions { IsUpsert = true });
 
-                    response = Ok(new BodyResponse(false, "Account activated"));
+                    response = Ok(new BodyResponse(true, "Account activated"));
                 }
                 else
                 {
@@ -159,12 +159,6 @@ namespace SocialNetwork.Rest.Controllers
             }
 
             return response;
-        }
-
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
         }
     }
 }

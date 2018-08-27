@@ -13,5 +13,9 @@ namespace SocialNetwork.Rest.Helpers
         public static String key_jwt_activation = "aquivaotraclavesupersecreta";
         public static String issuer_jwt_activation = "http://www.domainname.com";
         public static String audience_jwt_activation = "http://www.domainname.com";
+
+
+        public const int pageSizePosts = 3;
+        public const int pageSizeMessages = 8;
     }
 }

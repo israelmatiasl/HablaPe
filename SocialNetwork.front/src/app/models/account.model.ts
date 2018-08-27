@@ -8,7 +8,6 @@ export class SessionReq {
 
 export class SessionRes {
     constructor(
-        public success:boolean,
         public name: string,
         public lastname: string,
         public nick:string,
@@ -19,6 +18,17 @@ export class SessionRes {
     ){ }
 }
 
+export class Register {
+    constructor(
+        public name: string,
+        public lastname:string,
+        public gender:string,
+        public birthday:DateFormat,
+        public email:string,
+        public password:string,
+        public agree:boolean
+    ){ }
+}
 
 export class RegisterReq {
     constructor(
@@ -34,8 +44,15 @@ export class RegisterReq {
 
 export class RegisterRes {
     constructor(
-        public success: boolean,
         public message: string,
         public name: string
     ){ }
+}
+
+export class DateFormat {
+    constructor(
+        public day:number,
+        public month:number,
+        public year:number
+    ) { }
 }

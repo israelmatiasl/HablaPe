@@ -3,7 +3,7 @@ import { SessionReq, SessionRes, RegisterReq, RegisterRes } from '../../models/a
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { API_URL } from "../../helpers/constants";
-import { MenuResponse } from '../../models/menu.model';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class SessionService {
@@ -12,23 +12,24 @@ export class SessionService {
 
   createSession(sessionReq:SessionReq){
     let url = `${API_URL}/signin`;
-    return this._http.post(url, sessionReq).map((response:any) => {
-      if(response.success){
-        this.saveSession(response.session);
-        this.saveMenu(response.menuResponse);
-        return true;
-      }
-      else{
-        return false;
-      }
-    });
+
+    return this._http.post(url, sessionReq).pipe(
+      map((res:any) => {
+        if (res.success) {
+          this.saveSession(res.session);
+        }
+        return res;
+      })
+    );
   }
 
   registerAccount(register:RegisterReq){
     let url = `${API_URL}/register`;
-    return this._http.post(url, register).map((response:RegisterRes) => {
-      return response;
-    });
+    return this._http.post(url, register).pipe(
+      map((response:RegisterRes) => {
+        return response;
+     })
+    );
   }
 
   deleteSession(){
@@ -41,16 +42,12 @@ export class SessionService {
     localStorage.setItem('session', JSON.stringify(session));
   }
 
-  saveMenu(menuReponse:MenuResponse){
-    localStorage.setItem('menu', JSON.stringify(menuReponse));
-  }
-
   getSession(){
     let session = null;
     if(localStorage.getItem('session')){
       let sessionRes:SessionRes = JSON.parse(localStorage.getItem('session'));
-      session = new SessionRes(null, sessionRes.name, sessionRes.lastname, sessionRes.nick,
-                               sessionRes.birthday, sessionRes.gender, sessionRes.photo, null );
+      session = new SessionRes(sessionRes.name, sessionRes.lastname, sessionRes.nick,
+                               sessionRes.birthday, sessionRes.gender, sessionRes.photo, null);
     }
     return session;
   }

@@ -1,54 +1,85 @@
 import { Component, OnInit } from '@angular/core';
-import { RegisterReq, SessionReq, RegisterRes } from '../models/account.model';
-import { NgForm } from '@angular/forms';
+import { Register, RegisterReq, SessionReq } from '../models/account.model';
+import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
 import { SessionService } from '../services/services.index';
 import { Router } from '@angular/router';
-import swal from 'sweetalert2'
-
-declare function init_app();
+import { NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html'
 })
+
 export class AuthComponent implements OnInit {
 
-  public register:RegisterReq;
+  public fGroup:FormGroup;
+  currentJustify = 'justified';
+  public register:Register;
   public session:SessionReq;
-  public invalidSession:boolean = false;
+  public sessionLoading = false;
+  public registerLoading = false;
+  public alertClosed = true;
+  public alertMessage:string;
 
-  constructor(private authService:SessionService, private _router:Router) {
-    this.register = new RegisterReq('', '', '', '', '', '', false);
+  constructor(private authService:SessionService, private config: NgbDatepickerConfig, private _router:Router) {
+    this.config.minDate = {year: 1970, month: 1, day: 1};
+    this.config.maxDate = {year: new Date().getFullYear() - 13, month: 12, day: 31};
+
     this.session = new SessionReq('', '', false);
   }
 
   ngOnInit() {
-    init_app();
+    this.fGroup = new FormGroup({
+      name: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(30)]),
+      lastname: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(30)]),
+      birthday: new FormControl(null, [Validators.required]),
+      gender: new FormControl(null, [Validators.required]),
+      email: new FormControl(null, [Validators.required, Validators.email, Validators.minLength(4)]),
+      password: new FormControl(null, [Validators.required, Validators.minLength(8), Validators.maxLength(50)]),
+      agree: new FormControl(false)
+    }, { validators: this.validGender('gender' )} );
+  }
+
+  validGender(gender:string){
+    return (group: FormGroup) => {
+      let validGenders = ['male', 'female'];
+      let field = group.controls[gender].value;
+      if(validGenders.indexOf(field) > -1){
+        return null;
+      }
+      else{
+        return { notValid: true }
+      }
+    };
   }
 
   Session(form:NgForm){
     if(form.invalid) return;
-    this.authService.createSession(this.session).subscribe((res:boolean) =>{
-      if(res){
-        this._router.navigate(['/home']);
-        this.invalidSession = false;
-      }
-      else {
-        this.invalidSession = true;
-      }
+    this.sessionLoading = true;
+    this.authService.createSession(this.session).subscribe((res:any) => {
+      setTimeout(()=> {
+        if (!res.success) { this.autoCloseAlert(res.message); }
+        else {
+          this._router.navigate(["/home"]);
+        }
+        this.sessionLoading = false;
+      }, 2000);
+    }, (err) => {
+      this.autoCloseAlert(err.error);
+      this.sessionLoading = false;
     });
   }
 
-  RegisterAccount(form:NgForm){
-    if(form.invalid || !this.register.agree) return;
-    this.authService.registerAccount(this.register).subscribe((res:RegisterRes) => {
-      if(res.success){
-        swal({
-          title: 'En hora buena!',
-          text: 'Su cuenta ha sido creado correctamente. Por favor revise su email para verificar su cuenta.',
-          type: 'success',
-        })
-      }
-    });
+  autoCloseAlert(message:string){
+    this.alertClosed = false;
+    this.alertMessage = message;
+    setTimeout(()=> {
+      this.alertClosed = true;
+      this.alertMessage = null;
+    }, 4000);
+  }
+
+  RegisterAccount(){
+    console.log(this.fGroup)
   }
 }

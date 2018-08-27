@@ -1,148 +1,139 @@
-<div class="landing-page">
-    <div class="content-bg-wrap"></div>
-    <div class="header--standard header--standard-landing" id="header--standard">
-        <div class="container">
-            <div class="header--standard-wrap">
+<div class="bs-component">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="javascript:void(0)">
+            <b>HABLA PE</b>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-                <a href="#" class="logo">
-                    <div class="img-wrap">
-                        <img src="assets/img/logo.png" alt="Olympus">
-                        <img src="assets/img/logo-colored-small.png" alt="Olympus" class="logo-colored">
+        <div class="collapse navbar-collapse" id="navbarColor01">
+            <ul class="navbar-nav mr-auto">
+            </ul>
+            <form ngNativeValidate #form="ngForm" (ngSubmit)="Session(form, false)" class="form-inline my-2 my-lg-0">
+                <!-- <input [(ngModel)]="_session.email" name="email" class="form-control mr-sm-2" type="text" placeholder="Ingrese su email">
+                <input [(ngModel)]="_session.password" name="password" class="form-control mr-sm-2" type="password" placeholder="Ingrese su contraseña">
+                <button class="btn btn-secondary my-2 my-sm-0" [disabled]="sessionLoading || form.invalid" type="submit">Ingresar
+                        <i *ngIf="sessionLoading" class="fas fa-spin fa-sync"></i>
+                </button> -->
+                <button class="btn btn-secondary my-2 my-sm-0 ml-2" type="button" (click)="t.select('tab-signup')">Registrarme</button>
+            </form>
+        </div>
+    </nav>
+    <div id="source-button" class="btn btn-primary btn-xs" style="display: none;">&lt; &gt;</div>
+</div>
+
+<div class="container mt-f-5">
+    <div class="row">
+        <div class="col-md-7">
+            <div class="row front-head">
+                <div class="col-md-12">
+                    <div class="parent-body">
+                        <h1 class="child-body-text text-center"> <b>HABLA PE</b>, TE UNES?</h1>
                     </div>
-                    <div class="title-block">
-                        <h6 class="logo-title">olympus</h6>
-                        <div class="sub-title">SOCIAL NETWORK</div>
+                </div>
+            </div>
+            <div class="row front-body">
+                <div class="col-md-12">
+                    <div class="parent-body">
+                        <img src="assets/images/front-1.svg" class="child-body">
                     </div>
-                </a>
-                <a href="#" class="open-responsive-menu js-open-responsive-menu">
-                    <svg class="olymp-menu-icon"><use xlink:href="assets/svg-icons/sprites/icons.svg#olymp-menu-icon"></use></svg>
-                </a>
+                </div>
             </div>
         </div>
-    </div>
-
-    <div class="header-spacer--standard"></div>
-
-    <div class="container">
-        <div class="row display-flex">
-            <div class="col col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-                <div class="landing-content">
-                    <h1>Bienvenido a esta red que crece contigo!</h1>
-                    <p>Siempre vamos a dar lo mejor para su comodidad. Esta es una red social en constante crecimiento. Usted puede unirse y ser parte de nosotros!
-                    </p>
-                    <a href="#" class="btn btn-md btn-border c-white">Únete con nosotros!</a>
-                </div>
-            </div>
-
-            <div class="col col-xl-5 col-lg-6 col-md-12 col-sm-12 col-12">
-                <div class="registration-login-form">
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#login" role="tab">
-                                <svg class="olymp-login-icon"><use xlink:href="assets/svg-icons/sprites/icons.svg#olymp-login-icon"></use></svg>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#register" role="tab">
-                                <svg class="olymp-register-icon"><use xlink:href="assets/svg-icons/sprites/icons.svg#olymp-register-icon"></use></svg>
-                            </a>
-                        </li>
-                    </ul>
-
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="login" role="tabpanel" data-mh="log-tab">
-                            <div class="title h6">INICIAR SESIÓN</div>
-                            <form ngNativeValidate #form="ngForm" class="content" (ngSubmit)="Session(form)">
+        <div class="col-md-4">
+            <ngb-tabset [justify]="currentJustify" #t="ngbTabset">
+                <ngb-tab id="tab-login" title="Iniciar Sesión">
+                    <ng-template ngbTabContent>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <form ngNativeValidate #form="ngForm" (ngSubmit)="Session(form)">
+                                    <legend class="text-center mt-3 mb-4">Iniciar Sesión</legend>
+                                    <ngb-alert *ngIf="!alertClosed" [type]="'danger'" (close)="alertClosed = true">{{ alertMessage }}</ngb-alert>
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input [(ngModel)]="session.email" name="email" type="text" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Contraseña</label>
+                                        <input [(ngModel)]="session.password" name="password" type="password" class="form-control" required>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-check mt-3">
+                                                <label class="form-check-label">
+                                                    <input [(ngModel)]="session.remember" name="remember" class="form-check-input" type="checkbox">Recordarme
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="text-right mt-2">
+                                                <button type="submit" class="btn btn-primary" [disabled]="sessionLoading || form.invalid"> Ingresar
+                                                    <i *ngIf="sessionLoading" class="fas fa-spin fa-sync"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <hr>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <label style="color:red" *ngIf="invalidSession"> * Su email o contraseña son inválidos</label>
+                                        <p>Aún no tienes una cuenta? Qué esperas?</p>
+                                        <button type="button" class="btn btn-primary" (click)="t.select('tab-signup')">Regístrate aquí</button>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                                        <div class="form-group label-floating is-empty">
-                                            <label class="control-label">Email</label>
-                                            <input [(ngModel)]="session.email" name="email" class="form-control" type="email">
-                                        </div>
-                                        <div class="form-group label-floating is-empty">
-                                            <label class="control-label">Contraseña</label>
-                                            <input [(ngModel)]="session.password" name="password" class="form-control" type="password">
-                                        </div>
-                                        <div class="remember">
-                                            <div class="checkbox">
-                                                <label>
-                                                  <input [(ngModel)]="session.remember" name="optionsCheckboxes" type="checkbox"> Recordarme
-                                                </label>
-                                            </div>
-                                            <a href="#" class="forgot">Olvidé mi contraseña</a>
-                                        </div>
-                                        <button type="submit" class="btn btn-lg btn-primary full-width">INGRESAR</button>
-                                        <div class="or"></div>
-                                        <a href="#" class="btn btn-lg bg-google full-width btn-icon-left"><i class="fab fa-google" aria-hidden="true"></i>Ingresar con Google</a>
-                                        <p>No tienes una cuenta? <a href="#">Regístrate ahora!</a> Lo puedes hacer en tan pocos pasos.</p>
-                                    </div>
-                                </div>
-                            </form>
+                            </div>
                         </div>
-
-                        <div class="tab-pane" id="register" role="tabpanel" data-mh="log-tab">
-                            <div class="title h6">ÚNASE A NOSOTROS</div>
-                            <form ngNativeValidate #form="ngForm" class="content" (ngSubmit)="RegisterAccount(form)">
-                                <div class="row">
-                                    <div class="col col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                        <div class="form-group label-floating is-empty">
-                                            <label class="control-label">Nombre</label>
-                                            <input [(ngModel)]="register.name" name="name" class="form-control" type="text">
-                                        </div>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab id="tab-signup" title="Registro">
+                    <ng-template ngbTabContent>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <form ngNativeValidate [formGroup]="fGroup" class="content" (ngSubmit)="RegisterAccount()">
+                                    <legend class="text-center mt-3 mb-4">Registrarme</legend>
+                                    <div class="form-group">
+                                        <label>Nombres</label>
+                                        <input formControlName="name" name="name" type="text" class="form-control" [ngClass]="{'is-invalid': !fGroup.controls['name'].valid && fGroup.controls['name'].touched}">
                                     </div>
-                                    <div class="col col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                        <div class="form-group label-floating is-empty">
-                                            <label class="control-label">Apellidos</label>
-                                            <input [(ngModel)]="register.lastname" name="lastname" class="form-control" type="text">
-                                        </div>
+                                    <div class="form-group">
+                                        <label>Apellidos</label>
+                                        <input formControlName="lastname" name="lastname" type="text" class="form-control" [ngClass]="{'is-invalid': !fGroup.controls['lastname'].valid && fGroup.controls['lastname'].touched}">
                                     </div>
-                                    <div class="col col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                                        <div class="form-group label-floating is-empty">
-                                            <label class="control-label">Email</label>
-                                            <input [(ngModel)]="register.email" name="email" class="form-control" type="email">
-                                        </div>
-                                        <div class="form-group label-floating is-empty">
-                                            <label class="control-label">Contraseña</label>
-                                            <input [(ngModel)]="register.password" name="password" class="form-control" type="password">
-                                        </div>
-
-                                        <div class="form-group date-time-picker label-floating">
-                                            <label class="control-label">Fecha de Nacimiento</label>
-                                            <input [(ngModel)]="register.birthday" name="datetimepicker" />
-                                            <span class="input-group-addon">
-                                              <svg class="olymp-calendar-icon"><use xlink:href="assets/svg-icons/sprites/icons.svg#olymp-calendar-icon"></use></svg>
-                                            </span>
-                                        </div>
-                                        <div class="form-group label-floating is-select">
-                                            <label class="control-label">Género</label>
-                                            <select [(ngModel)]="register.gender" name="gender" class="selectpicker form-control">
-                                              <option value="">Seleccione un género</option>
-                                              <option value="Male">Masculino</option>
-                                              <option value="Female">Femenino</option>
-                                              <option value="Other">Otro</option>
-                                            </select>
-                                        </div>
-                                        <div class="remember">
-                                            <div class="checkbox">
-                                                <label>
-                                                  <input [(ngModel)]="register.agree" name="optionsCheckboxes" type="checkbox">Acepto los <a href="#">términos y condiciones</a> del sitio web
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary btn-lg full-width">¡UNIRSE YA!</button>
+                                    <div class="form-group">
+                                        <label>Fecha de Nacimiento</label>
+                                        <input formControlName="birthday" name="birthday" class="form-control" ngbDatepicker #d="ngbDatepicker" (click)="d.toggle()" [ngClass]="{'is-invalid': !fGroup.controls['birthday'].valid && fGroup.controls['birthday'].touched}" readonly>
                                     </div>
-                                </div>
-                            </form>
+                                    <div class="form-group">
+                                        <label>Género</label>
+                                        <select formControlName="gender" name="gender" class="form-control" [ngClass]="{'is-invalid': !fGroup.controls['gender'].valid && fGroup.controls['gender'].touched}">
+                                            <option>Masculino</option>
+                                            <option>Femenino</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input formControlName="email" name="email" type="email" class="form-control" [ngClass]="{'is-invalid': !fGroup.controls['email'].valid && fGroup.controls['email'].touched}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Contraseña</label>
+                                        <input formControlName="password" name="password" type="password" class="form-control" [ngClass]="{'is-invalid': !fGroup.controls['password'].valid && fGroup.controls['password'].touched}">
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                        <input formControlName="agree" name="agree" class="form-check-input" type="checkbox">
+                                            Acepto los términos y condiciones
+                                        </label>
+                                    </div>
+                                    <div class="text-right mt-4">
+                                        <button type="submit" class="btn btn-primary">Registrarme</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-
-                    </div>
-                </div>
-            </div>
+                    </ng-template>
+                </ngb-tab>
+            </ngb-tabset>
         </div>
     </div>
 </div>

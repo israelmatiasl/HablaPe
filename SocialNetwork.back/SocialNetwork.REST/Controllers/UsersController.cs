@@ -32,11 +32,5 @@ namespace SocialNetwork.Rest.Controllers
 
             return response;
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-        }
-        
     }
 }

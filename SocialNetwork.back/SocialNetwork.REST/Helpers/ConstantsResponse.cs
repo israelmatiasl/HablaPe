@@ -29,11 +29,18 @@ namespace SocialNetwork.Rest.Helpers
         public const String FollowFailed = "Already you are following this user";
         public const String UnFollowSuccess = "Stopped following this user";
         public const String UnFollowFailed = "Is not following this user";
+        public const String NotFollow = "You're not following this user";
         #endregion Follow
 
         #region Post
+        public const String PostGetFailed = "Have been occurred an error while get the posts";
         public const String PostSuccess = "Your post has been shared";
         public const String PostFailed = "Your post has not been shared";
+        public const String PostNotFound = "Post not found";
         #endregion Post
+
+        #region Profile
+        public const String UserNotFound = "User not found";
+        #endregion Profile
     }
 }

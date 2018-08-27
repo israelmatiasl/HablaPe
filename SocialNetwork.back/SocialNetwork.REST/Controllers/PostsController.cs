@@ -17,9 +17,10 @@ namespace SocialNetwork.Rest.Controllers
 {
     public class PostsController : BaseController
     {
+
         [HttpGet]
         [Route("posts")]
-        public async Task<IActionResult> GetPosts()
+        public async Task<IActionResult> GetAllPosts(int? page = 1)
         {
             var response = default(IActionResult);
             var context = default(SocialNetworkDbContext);
@@ -28,56 +29,22 @@ namespace SocialNetwork.Rest.Controllers
             {
                 context = new SocialNetworkDbContext();
                 var identity = getIdentity();
+                
+                List<String> following = new List<String>();
+                following = await context.Follows.AsQueryable().Where(x => x.follower == identity.userId).Select(x => x.followed).ToListAsync();
+                following.Add(identity.userId);
 
-                List<PostResponse> posts = new List<PostResponse>();
-                await context.Follows.Find(x => x.follower == identity.userId).ForEachAsync(following => {
-                    context.Posts.Find(x => x.user == following.followed).ForEachAsync(post =>
+                
+                await getPostsAsync(context, following, page.Value).ContinueWith((res) => {
+                    if (res.IsCompletedSuccessfully)
                     {
-                        List<ImagesResponse> images = new List<ImagesResponse>();
-                        context.Images.Find(x =>x.post == post.id).ForEachAsync(image =>
-                        {
-                            images.Add(new ImagesResponse(image.url, image.createdAt));
-                        });
-                        var user = context.Users.Find(x => x.id == post.user && x.status == "ACTIVE").FirstOrDefaultAsync().Result;
-                        UserResponse userResponse = new UserResponse(user.name, user.lastname, user.photo, $"{UserUrl}/{user.id}");
-
-                        posts.Add(new PostResponse(userResponse, post.textbody, images, post.createAt, post.updatedAt, ""));
-                    });
+                        response = Ok(res.Result);
+                    }
+                    else
+                    {
+                        response = Ok(new BodyResponse(false, ConstantsResponse.PostGetFailed));
+                    }
                 });
-                //await context.Follows.Find(x => x.follower == identity.userId).ForEachAsync(following => {
-                //    context.Posts.Find(x => x.user == following.followed).SortBy(x=>x.createAt).ForEachAsync(post =>
-                //    {
-                //        List<ImagesResponse> images = new List<ImagesResponse>();
-                //        context.Images.Find(x => x.post == post.id).ForEachAsync(image =>
-                //        {
-                //            images.Add(new ImagesResponse(image.url, image.createdAt));
-                //        });
-
-                //        var user = context.Users.AsQueryable().Where(x=>x.id == post.user).Select(x => 
-                //            new UserResponse(x.name, x.lastname, x.photo, ""))
-                //            .FirstOrDefaultAsync().Result;
-
-                //        posts.Add(new PostResponse(user, post.textbody, images, post.createAt, post.updatedAt, ""));
-                //    });
-                //});
-
-                //await context.Posts.Find(new BsonDocument()).ForEachAsync(post =>
-                //{
-                //    List<ImagesResponse> images = new List<ImagesResponse>();
-                //    context.Images.Find(x =>x.post == post.id).ForEachAsync(image =>
-                //    {
-                //        images.Add(new ImagesResponse { id = image.id, url = image.url, createdAt = image.createdAt });
-                //    });
-                    
-                //    var user = context.Users.Find(x => x.id == post.user && x.status == "ACTIVE").FirstOrDefaultAsync().Result;
-                //    UserResponse userResponse = new UserResponse(user.name, user.lastname, user.photo, $"{UserUrl}/{user.id}");
-
-                //    posts.Add(new PostResponse() { id = post.id, user = userResponse, textbody = post.textbody, images = images, createdAt = post.createAt, updatedAt = post.updatedAt });
-
-                //});
-                
-                
-                response = Ok(posts);
             }
             catch(Exception e)
             {
@@ -88,8 +55,96 @@ namespace SocialNetwork.Rest.Controllers
         }
 
 
+        [HttpGet]
+        [Route("posts/{postId}")]
+        public async Task<IActionResult> GetOnePost(String postId)
+        {
+            var response = default(IActionResult);
+            var context = default(SocialNetworkDbContext);
 
-        
+            try
+            {
+                context = new SocialNetworkDbContext();
+                var post = await context.Posts.Find(x => x.id == postId).FirstOrDefaultAsync();
+                if(post is null)
+                {
+                    response = Ok(new BodyResponse(false, ConstantsResponse.PostNotFound));
+                }
+                else
+                {
+                    await FillPosts(context, new List<Post> { post }).ContinueWith((res) =>
+                    {
+                        if (res.IsCompletedSuccessfully)
+                        {
+                            response = Ok(new PostResponse(res.Result[0]));
+                        }
+                        else
+                        {
+                            response = Ok(new BodyResponse(false, ConstantsResponse.PostGetFailed));
+                        }
+                    });
+                }
+            }
+            catch(Exception e)
+            {
+                response = StatusCode(500, e.Message);
+            }
+            return response;
+        }
+
+        [HttpGet]
+        [Route("users/{user}/posts")]
+        public async Task<IActionResult> GetPostsByUser(String user, int? page = 1)
+        {
+            var response = default(IActionResult);
+            var context = default(SocialNetworkDbContext);
+
+            try
+            {
+                context = new SocialNetworkDbContext();
+                var identity = getIdentity();
+                string following = string.Empty;
+                string userFound = await context.Users.AsQueryable().Where(x => x.nick == user).Select(x => x.id).FirstOrDefaultAsync();
+
+                if (string.IsNullOrEmpty(userFound))
+                {
+                    response = Ok(new BodyResponse(false, ConstantsResponse.UserNotFound));
+                }
+                else
+                {
+                    if(userFound == identity.userId)
+                        following = userFound;
+                    else
+                        following = await context.Follows.AsQueryable().Where(x => x.follower == identity.userId && x.followed == userFound).Select(x => x.followed).FirstOrDefaultAsync();
+                    
+
+                    if (string.IsNullOrEmpty(following))
+                    {
+                        response = Ok(new BodyResponse(false, ConstantsResponse.NotFollow));
+                    }
+                    else
+                    {
+                        await getPostsAsync(context, new List<string> { following }, page.Value).ContinueWith((res) => {
+                            if (res.IsCompletedSuccessfully)
+                            {
+                                response = Ok(res.Result);
+                            }
+                            else
+                            {
+                                response = Ok(new BodyResponse(false, ConstantsResponse.PostGetFailed));
+                            }
+                        });
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                response = StatusCode(500, e.Message);
+            }
+            return response;
+        }
+
+
         [HttpPost]
         [Route("posts")]
         public async Task<IActionResult> CreatePost([FromBody] PostRequest model)
@@ -137,6 +192,48 @@ namespace SocialNetwork.Rest.Controllers
             }
 
             return response;
+        }
+
+        Task<PostsResponse> getPostsAsync(SocialNetworkDbContext context, List<String> following, int currentPage)
+        {
+            return Task.Factory.StartNew(() => {
+                var filterIn = Builders<Post>.Filter.In(x => x.user, following);
+                PostsResponse res = new PostsResponse();
+
+                var posts = context.Posts.Find(filterIn)
+                    .Skip((currentPage - 1) * Constants.pageSizePosts)
+                    .Limit(Constants.pageSizePosts)
+                    .SortByDescending(x => x.createAt)
+                    .ToListAsync().Result;
+                var total = context.Posts.Find(filterIn).CountDocumentsAsync().Result;
+
+                FillPosts(context, posts).ContinueWith(response => {
+                    res.posts = response.Result;
+                    res.pagination = new Pagination(CurrentUrlWithQuery, currentPage, Constants.pageSizePosts, total);
+                }).Wait();
+                return res;
+            });
+        }
+
+        Task<List<PrePostResponse>> FillPosts(SocialNetworkDbContext context, List<Post> posts)
+        {
+            return Task.Factory.StartNew(() => {
+                List<PrePostResponse> res = new List<PrePostResponse>();
+                foreach (var post in posts)
+                {
+                    List<ImageResponse> imagesRes = new List<ImageResponse>();
+                    var images = context.Images.Find(x => x.post == post.id).ToListAsync().Result;
+                    foreach (var image in images)
+                    {
+                        imagesRes.Add(new ImageResponse(image.url));
+                    }
+                    var user = context.Users.AsQueryable().Where(x => x.id == post.user)
+                        .Select(x => new UserResponse(x.id, x.name, x.lastname, x.photo, UserUrl))
+                        .FirstOrDefaultAsync().Result;
+                    res.Add(new PrePostResponse(user, post.id, post.textbody, imagesRes, post.createAt, post.updatedAt, PostUrl));
+                }
+                return res;
+            });
         }
     }
 }

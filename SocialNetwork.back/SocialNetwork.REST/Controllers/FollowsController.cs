@@ -30,7 +30,7 @@ namespace SocialNetwork.Rest.Controllers
                 List<UserResponse> usersFollowing = new List<UserResponse>();
                 await context.Follows.Find(x => x.follower == identity.userId).ForEachAsync(following => {
                     var user = context.Users.Find(x => x.id == following.followed).FirstOrDefaultAsync().Result;
-                    usersFollowing.Add(new UserResponse(user.id, user.name, user.lastname, user.email));
+                    usersFollowing.Add(new UserResponse(user.id, user.name, user.lastname, user.email, UserUrl));
                 });
 
                 response = Ok(new ListUserResponse(usersFollowing));
@@ -57,7 +57,7 @@ namespace SocialNetwork.Rest.Controllers
                 List<UserResponse> usersFollowing = new List<UserResponse>();
                 await context.Follows.Find(x => x.followed == identity.userId).ForEachAsync(following => {
                     var user = context.Users.Find(x => x.id == following.follower).FirstOrDefaultAsync().Result;
-                    usersFollowing.Add(new UserResponse(user.id, user.name, user.lastname, user.email));
+                    usersFollowing.Add(new UserResponse(user.id, user.name, user.lastname, user.email, UserUrl));
                 });
 
                 response = Ok(new ListUserResponse(usersFollowing));

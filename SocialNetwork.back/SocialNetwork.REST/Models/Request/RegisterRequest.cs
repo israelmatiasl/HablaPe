@@ -24,7 +24,6 @@ namespace SocialNetwork.Rest.Models.Request
         public String gender { get; set; }
 
         [Required(ErrorMessage = "Birthday field is necessary.")]
-        //[DateFormatValidation]
         public String birthday { get; set; }
 
         [Required(ErrorMessage = "Email field is necessary.")]

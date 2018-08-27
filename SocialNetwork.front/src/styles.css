@@ -1,33 +1,33 @@
 /* You can add global styles to this file, and also import other style files */
 
-.top-mask {
-    width: 100%;
-    height: 350px;
+.mt-f-5 {
+    margin-top: 6rem;
 }
 
-.img-mask {
-    display: block;
-    max-width: 1370px;
-    max-height: 350px;
-    width: auto;
-    height: auto;
+.p-f-5 {
+    padding-left: 2rem;
+    padding-right: 2rem;
 }
 
-.img-profile-mask {
-    width: 100%;
+.front-head {
+    height: 120px;
 }
 
-@media screen and (max-width: 1198px) {
-    .left-body {
-        display: none !important;
-    }
-    .right-body {
-        display: none !important;
-    }
+.front-body {
+    height: 580px;
 }
 
-@media screen and (max-width: 1024px) {
-    .top-body {
-        display: none !important;
-    }
+.parent-body {
+    display: flex;
+}
+
+.child-body {
+    width: 90%;
+    margin: auto;
+}
+
+.child-body-text {
+    padding-top: 1rem;
+    margin: auto;
+    font-size: 55px;
 }

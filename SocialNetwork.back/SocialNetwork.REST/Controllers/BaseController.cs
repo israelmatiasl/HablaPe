@@ -14,9 +14,10 @@ namespace SocialNetwork.Rest.Controllers
     {
         protected string BaseUrl => $"{Request.Scheme}://{Request.Host}".ToLower();
         protected string CurrentUrl => $"{BaseUrl}{Request.Path}".ToLower();
+        protected string CurrentUrlWithQuery => $"{BaseUrl}{Request.Path}{Request.QueryString}".ToLower();
         protected string ActivationUrl => $"{BaseUrl}/activation";
         protected string UserUrl => $"{BaseUrl}/profile";
-
+        protected string PostUrl => $"{BaseUrl}/posts";
 
         protected Identity getIdentity()
         {
@@ -67,6 +68,12 @@ namespace SocialNetwork.Rest.Controllers
         protected void sendEmailAWS(String name, String receiverEmail, String linkActivation)
         {
             AmazonSES.sendEmail(name, receiverEmail, linkActivation);
+        }
+
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
         }
     }
 }

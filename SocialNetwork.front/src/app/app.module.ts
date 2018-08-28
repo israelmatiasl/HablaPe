@@ -5,6 +5,7 @@ import { HttpModule } from "@angular/http";
 import { NgbModule, NgbDateParserFormatter, NgbDatepickerI18n } from '@ng-bootstrap/ng-bootstrap';
 import { PagesModule } from './pages/pages.module';
 import { ServicesModule } from './services/services.module';
+import { ComponentsModule } from './components/components.module';
 
 import { APP_ROUTES } from './app.routes';
 
@@ -28,6 +29,7 @@ import { DateFormatter } from './services/formatter/date-formatter.service';
     ServicesModule,
     HttpModule,
     PagesModule,
+    ComponentsModule,
     NgbModule
   ],
   providers: [I18n, { provide: NgbDateParserFormatter, useClass: DateFormatter }, { provide: NgbDatepickerI18n, useClass: CustomDatepickerI18n }],

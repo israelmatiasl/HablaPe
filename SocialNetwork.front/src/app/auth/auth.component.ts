@@ -4,6 +4,7 @@ import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
 import { SessionService } from '../services/services.index';
 import { Router } from '@angular/router';
 import { NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
+import { validateAllFormFields } from '../helpers/functions'
 
 @Component({
   selector: 'app-auth',
@@ -33,11 +34,11 @@ export class AuthComponent implements OnInit {
       name: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(30)]),
       lastname: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(30)]),
       birthday: new FormControl(null, [Validators.required]),
-      gender: new FormControl(null, [Validators.required]),
-      email: new FormControl(null, [Validators.required, Validators.email, Validators.minLength(4)]),
+      gender: new FormControl('', [Validators.required]),
+      email: new FormControl(null, [Validators.required, Validators.email, Validators.maxLength(40)]),
       password: new FormControl(null, [Validators.required, Validators.minLength(8), Validators.maxLength(50)]),
-      agree: new FormControl(false)
-    }, { validators: this.validGender('gender' )} );
+      agree: new FormControl(false , [Validators.requiredTrue])
+    }, { validators: this.validGender('gender')});
   }
 
   validGender(gender:string){
@@ -48,7 +49,7 @@ export class AuthComponent implements OnInit {
         return null;
       }
       else{
-        return { notValid: true }
+        return { invalid: true }
       }
     };
   }
@@ -80,6 +81,23 @@ export class AuthComponent implements OnInit {
   }
 
   RegisterAccount(){
-    console.log(this.fGroup)
+    if(this.fGroup.invalid){
+      validateAllFormFields(this.fGroup);
+    }
+    else {
+
+    }
+  }
+
+  isFieldInvalid(field: string) {
+    return !this.fGroup.get(field).valid && this.fGroup.get(field).touched;
+  }
+
+  getFieldError(field: string){
+    return this.fGroup.get(field);
+  }
+  
+  displayFieldCss(field: string) {
+    return { 'is-invalid': this.isFieldInvalid(field) };
   }
 }

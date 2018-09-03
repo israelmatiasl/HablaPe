@@ -17,7 +17,6 @@ namespace SocialNetwork.Rest.Models.Request
 
         [Required(ErrorMessage = "Password is required")]
         [MinLength(1, ErrorMessage = "Please enter a password with more than 8 characters")]
-        [MaxLength(30, ErrorMessage = "Plase enter a password with less than 30 characters")]
         public String password { get; set; }
     }
 }

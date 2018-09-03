@@ -11,17 +11,17 @@ namespace SocialNetwork.Rest.Helpers
         public static String ERROR_HTTP_500 = "An internal error occurred on the server.";
 
         #region Login
-        public const String bad_credentials = "Email or password are incorrect.";
+        public const String BadCredentials = "Email o contraseña incorrectos";
         #endregion
 
         #region Register
-        public const String register_success = "Has been successfully registered!";
-        public const String register_failed = "Has been failed while trying register.";
-        public const String email_exists = "There is already a user using this email";
+        public const String RegisteredSucceed = "Se ha registrado satisfactoriamente. Se ha enviado un enlace a su email para poder verificar su cuenta";
+        public const String RegisteredFailed = "Ha ocurrido un error al momento de registrar. Por favor inténtelo más tarde.";
+        public const String EmailExists = "Ya existe un usuario registrado con el mismo email. Intente ingresar otro email.";
         #endregion Register
 
         #region Token
-        public const String token_invalid = "Token is invalid";
+        public const String TokenInvalid = "Token is invalid";
         #endregion
 
         #region Follow

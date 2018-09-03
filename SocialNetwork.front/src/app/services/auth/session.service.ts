@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { SessionReq, SessionRes, RegisterReq, RegisterRes } from '../../models/account.model';
+import { SessionReq, SessionRes, RegisterReq } from '../../models/account.model';
+import { BodyResponse } from '../../models/response.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { API_URL } from "../../helpers/constants";
@@ -26,7 +27,7 @@ export class SessionService {
   registerAccount(register:RegisterReq){
     let url = `${API_URL}/register`;
     return this._http.post(url, register).pipe(
-      map((response:RegisterRes) => {
+      map((response:BodyResponse) => {
         return response;
      })
     );
@@ -34,7 +35,6 @@ export class SessionService {
 
   deleteSession(){
     localStorage.removeItem('session');
-    localStorage.removeItem('menu');
     this._router.navigate(['/auth']);
   }
 

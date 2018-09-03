@@ -37,14 +37,15 @@ namespace SocialNetwork.Rest.Controllers
                 {
                     context = new SocialNetworkDbContext();
                     jwt = new JWTService();
-
+                    
                     var projection = Builders<User>.Projection.Exclude("description").Exclude("joindate");
                     var user = await context.Users.Find(x => x.email == model.email && x.status == "ACTIVE" && x.verified == true)
                         .Project<User>(projection).FirstOrDefaultAsync();
 
                     if (user != null)
                     {
-                        if(BCrypt.Net.BCrypt.Verify(model.password, user.password))
+                        string realPassword = Cypher.DecryptStringAES(model.password);
+                        if (BCrypt.Net.BCrypt.Verify(realPassword, user.password))
                         {
                             var session = new PreSessionResponse(user.name, user.lastname, user.nick, user.birthday.ToShortDateString(),
                                                                  user.gender, user.photo, jwt.JwtBuilder(user));
@@ -52,12 +53,12 @@ namespace SocialNetwork.Rest.Controllers
                         }
                         else
                         {
-                            response = Ok(new BodyResponse(false, ConstantsResponse.bad_credentials));
+                            response = Ok(new BodyResponse(false, ConstantsResponse.BadCredentials));
                         }
                     }
                     else
                     {
-                        response = Ok(new BodyResponse(false, ConstantsResponse.bad_credentials));
+                        response = Ok(new BodyResponse(false, ConstantsResponse.BadCredentials));
                     }
                 }
             }
@@ -91,7 +92,7 @@ namespace SocialNetwork.Rest.Controllers
                     var exists = await context.Users.Find(x=>x.email == model.email).FirstOrDefaultAsync();
                     if(exists != null)
                     {
-                        response = Ok(new BodyResponse(false, ConstantsResponse.email_exists));
+                        response = Ok(new BodyResponse(false, ConstantsResponse.EmailExists));
                     }
                     else
                     {
@@ -103,9 +104,11 @@ namespace SocialNetwork.Rest.Controllers
                         user.birthday = Convert.ToDateTime(model.birthday);
                         user.joindate = DateTime.Now;
                         user.email = model.email;
-                        user.password = BCrypt.Net.BCrypt.HashPassword(model.password);
+                        string realPassword = Cypher.DecryptStringAES(model.password);
+                        user.password = BCrypt.Net.BCrypt.HashPassword(realPassword);
                         user.role = "USER";
                         user.status = "ACTIVE";
+                        user.verified = true; //just now
 
                         await context.Users.InsertOneAsync(user);
 
@@ -113,7 +116,7 @@ namespace SocialNetwork.Rest.Controllers
                         String linkActivation = $"{ActivationUrl}?activationCode={tokenActivation}";
 
                         //sendEmailAWS(user.name, user.email, linkActivation);
-                        response = Ok(new BodyResponse(true, ConstantsResponse.register_success));
+                        response = Ok(new BodyResponse(true, ConstantsResponse.RegisteredSucceed));
                     }
                 }
             }
@@ -150,7 +153,7 @@ namespace SocialNetwork.Rest.Controllers
                 }
                 else
                 {
-                    response = Ok(new BodyResponse(false, ConstantsResponse.token_invalid));
+                    response = Ok(new BodyResponse(false, ConstantsResponse.TokenInvalid));
                 }
             }
             catch(MongoException e)

@@ -45,6 +45,7 @@ export function getMessageValidation(field: string, type:string){
     } break;
     case 'birthday': {
       if(type == "required"){ response = "La fecha de nacimiento es necesaria"; }
+      else if (type == "ngbDate"){ response = "Ingrese una fecha válida"; }
     } break;
     case 'gender': {
       if(type == "required"){ response = "El género es necesario"; }
@@ -56,7 +57,7 @@ export function getMessageValidation(field: string, type:string){
     } break;
     case 'password': {
       if(type == "required"){ response = "La contraseña es necesaria"; }
-      else if (type == "email"){ response = "La contraseña debe contener por lo menos 8 caracteres" }
+      else if (type == "minlength"){ response = "La contraseña debe contener por lo menos 8 caracteres" }
       else if (type == "maxlength"){ response = "Este campo no puede contener más 30 caracteres" }
     } break;
     case 'agree': {

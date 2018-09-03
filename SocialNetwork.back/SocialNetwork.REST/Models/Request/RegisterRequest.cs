@@ -20,7 +20,7 @@ namespace SocialNetwork.Rest.Models.Request
         public String lastname { get; set; }
 
         [Required(ErrorMessage = "Gender field is necessary.")]
-        [StringRange(AllowableValues = new[] { "Male", "Female", "Other" }, ErrorMessage = "Gender field is not a valid gender")]
+        [StringRange(AllowableValues = new[] { "male", "female", "other" }, ErrorMessage = "Gender field is not a valid gender")]
         public String gender { get; set; }
 
         [Required(ErrorMessage = "Birthday field is necessary.")]
